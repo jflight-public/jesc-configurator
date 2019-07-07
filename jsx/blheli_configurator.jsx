@@ -437,7 +437,7 @@ var Configurator = React.createClass({
         }
 
         function rebindMSP(deferred) {
-            MSP.send_message(MSP_codes.MSP_SET_4WAY_IF, false, false, function() { GUI.log.bind(GUI,'bind done'); return deferred.resolve() });
+            MSP.send_message(MSP_codes.MSP_SET_4WAY_IF, false, false, function() { return deferred.resolve() });
         }
         
         function flashSiLabsBLB(message, escIndex, restart) {
@@ -471,7 +471,6 @@ var Configurator = React.createClass({
                 .then(MSP.send_message.bind(MSP,MSP_codes.MSP_SET_4WAY_IF, false, false,function(){}))
                 .delay(1000)
                 .then(MSP.callbacks_cleanup.bind(MSP))
-                .then(GUI.log.bind(GUI, 'done'))
                 .then(_4way.start.bind(_4way))
             }
             return promise;
@@ -837,9 +836,9 @@ var Configurator = React.createClass({
             for (var address = begin_address; address < end_address; address += BLHELI_SILABS_PAGE_SIZE) {
                 for (var i = address; i < address + BLHELI_SILABS_PAGE_SIZE; i++) {
                     if (flashImage[i] != 0xff) {
-                        promise = promise.then(GUI.log.bind(GUI, 'erase ' + address)).then(erasePage.bind(undefined, (address / BLHELI_SILABS_PAGE_SIZE)));
+                        promise = promise.then(erasePage.bind(undefined, (address / BLHELI_SILABS_PAGE_SIZE)));
                         for (var l = address; l < address + BLHELI_SILABS_PAGE_SIZE; l += step) {
-                            promise = promise.then(GUI.log.bind(GUI, l)).then(_4way.write.bind(_4way, l, flashImage.subarray(l, l + step)))
+                            promise = promise.then(_4way.write.bind(_4way, l, flashImage.subarray(l, l + step)))
                                 .then(function() {
                                     updateProgress(step)
                                 })

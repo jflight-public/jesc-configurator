@@ -7,9 +7,9 @@
         }],
     "JESC" :
     [{
-        "name": "JESC 1.2",
-        "url" : "https://jflight.net/downloads/JESC_{0}_1_2.HEX",
-        "key" : "je0102"
+        "name": "JESC 1.3",
+        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/b82bc416c990a5f5a62722de37f97f4789f17bea/HEX/JESC_{0}_1_3.HEX",
+        "key" : "je0103"
         }]
 }
 
