@@ -1,6 +1,6 @@
-# blheli-configurator
+# jesc-configurator
 
-Google Chrome application for BLHeli firmware flashing and configuration.
+Google Chrome application for JESC firmware flashing and configuration.
 
 ## Disclaimer
 
@@ -9,32 +9,16 @@ This software is provided as is, use it at your own risk. **ALWAYS REMOVE THE PR
 ## Features
 
 * Only BLHeli passthrough supported at the moment, hence only **CleanFlight**,  **BetaFlight**, **INAV** and **TriFlight**
-* Changing settings for any BLHeli_S, BLHeli SiLabs and BLHeli Atmel ESCs with bootloader
-* Flashing BLHeli and BLHeli_S to SiLabs and Atmel ESCs
+* Changing settings for any JESC ESCs with bootloader
+* Flashing JESC and Rpm Telemetry Service BLHeli_S ESCs
 
 ## Future plans
 
-* Add declarative UI description for MAIN and MULTI modes
-* Full-featured 4-way interface support via BLHeli boxes, with C2-interface support
-* ~~Electron/NW.js wrapper with auto-update~~
-* Android/iOS version based on the same code-base
-
-## Adding a new BLHeli revision or new supported ESC
-
-You can submit pull requests to js/blheli_versions.json and js/blheli_escs.json files, user installations of BLHeli Configurator will see the changes shortly.
-
-## Installing BLHeli Configurator
+## Installing JESC Configurator
 
 ### Standalone
 
 Download the appropriate installer for your platform from [Releases](https://github.com/blheli-configurator/blheli-configurator/releases).
-
-### Via Chrome Web Store
-
-[![available in the Chrome web store](https://developer.chrome.com/webstore/images/ChromeWebStore_Badge_v2_206x58.png)](https://chrome.google.com/webstore/detail/blheli-configurator/mejfjggmbnocnfibbibmoogocnjbcjnk)
-
- 1. Visit [Chrome Web Store](https://chrome.google.com/webstore/detail/blheli-configurator/mejfjggmbnocnfibbibmoogocnjbcjnk)
- 2. Click + **Add to Chrome**
 
 ## Building (Chrome App)
 
@@ -82,7 +66,6 @@ If no platform is provided, all the platforms will be done in sequence.
 * **ChromeOS** use `gulp <task-name> --chromeos`
 
 You can also use multiple platforms e.g. `gulp <taskname> --osx64 --linux64`.
-
 
 ## Usage
 
