@@ -3,9 +3,9 @@
 	"minimum_chrome_version": "38",
 	"version": "1.1.0",
 	"author": "DieHertz",
-	"name": "BLHeli - Configurator",
-	"short_name": "blheli-configurator",
-	"description": "Cross-platform configuration tool for BLHeli-based electronic speed controllers",
+	"name": "JESC - Configurator",
+	"short_name": "jesc-configurator",
+	"description": "Cross-platform configuration tool for JESC on BLHeli_S based electronic speed controllers",
 
 	"icons": {
 		"128": "images/icon_128.png"
