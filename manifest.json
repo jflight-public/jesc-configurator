@@ -1,0 +1,44 @@
+{
+	"manifest_version": 2,
+	"minimum_chrome_version": "38",
+	"version": "1.1.0",
+	"author": "DieHertz",
+	"name": "BLHeli - Configurator",
+	"short_name": "blheli-configurator",
+	"description": "Cross-platform configuration tool for BLHeli-based electronic speed controllers",
+
+	"icons": {
+		"128": "images/icon_128.png"
+	},
+
+	"offline_enabled": true,
+
+	"default_locale": "en",
+
+	"app": {
+		"background": {
+			"scripts": [ "eventPage.js" ],
+			"persistent": false
+		}
+
+    },
+
+    "content_security_policy": "script-src 'self' https://www.paypalobject.com/; object-src 'self'",
+
+	"permissions": [
+		"https://jflight.net/",
+		"https://www.google-analytics.com/",
+		"https://www.paypalobjects.com/",
+		"https://*.github.com/",
+		"https://*.githubusercontent.com/",
+		"serial",
+		"usb",
+		"storage",
+        "webview",
+		"fileSystem",
+		"fileSystem.write",
+		"fileSystem.retainEntries",
+		"unlimitedStorage",
+		"notifications"
+	]
+}

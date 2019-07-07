@@ -1,0 +1,16 @@
+{
+    "Telemetry" :
+    [{
+        "name": "Dshot Telemetry Service 1.2",
+        "url" : "https://jflight.net/cgi-bin/encrypt/{1}/tl0102/1",
+        "key" : "tl0102"
+        }],
+    "JESC" :
+    [{
+        "name": "JESC 1.2",
+        "url" : "https://jflight.net/downloads/JESC_{0}_1_2.HEX",
+        "key" : "je0102"
+        }]
+}
+
+
