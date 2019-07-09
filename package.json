@@ -48,7 +48,7 @@
     "gulp": "gulp"
   },
   "config": {
-    "platformDependentModules": {
+    "_platformDependentModules": {
       "darwin": [
         "gulp-appdmg@1.0.3"
       ]

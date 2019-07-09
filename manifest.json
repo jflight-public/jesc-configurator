@@ -1,8 +1,8 @@
 {
 	"manifest_version": 2,
 	"minimum_chrome_version": "38",
-	"version": "1.1.0",
-	"author": "DieHertz",
+	"version": "1.2.0",
+	"author": "JoeLucid",
 	"name": "JESC - Configurator",
 	"short_name": "jesc-configurator",
 	"description": "Cross-platform configuration tool for JESC on BLHeli_S based electronic speed controllers",
@@ -22,8 +22,6 @@
 		}
 
     },
-
-    "content_security_policy": "script-src 'self' https://www.paypalobject.com/; object-src 'self'",
 
 	"permissions": [
 		"https://jflight.net/",
