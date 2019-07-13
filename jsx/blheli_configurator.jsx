@@ -927,9 +927,8 @@ var Configurator = React.createClass({
         
         try{
         // @todo perform some sanity checks on size of flash 
-            for (let i = 0; i < this.state.escsToFlash.length; ++i) {
-                const escIndex = this.state.escsToFlash[i];
-                await _4way.initFlash(escIndex);
+            for (let i = 0; i < this.props.escCount; ++i) {
+                await _4way.initFlash(i);
             }
 
        for (let i = 0; i < this.state.escsToFlash.length; ++i) {
