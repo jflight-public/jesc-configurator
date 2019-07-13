@@ -195,18 +195,24 @@ var Configurator = React.createClass({
                 escMetainfo[esc].available = false;
             }
         }
-        
-        var deferred = Q.defer();
-        $.get(uidQuery, function (content) {
-            return deferred.resolve(content);
-        }).fail(function () {
-            return deferred.reject(new Error('File is unavailable'));
-        })
-        ;
-        var result = JSON.parse(await deferred.promise);
-
-        for (let esc = 0; esc < this.props.escCount; ++esc) {
-            escMetainfo[esc].isLicensed = result[esc] != 0;
+         
+        try {
+            var deferred = Q.defer();
+            $.get(uidQuery, function (content) {
+                return deferred.resolve(content);
+            }).fail(function () {
+                GUI.log("couldn't retrieve esc status due to internet availability");
+                return deferred.reject(new Error('File is unavailable'));
+            })
+            ;
+            var result = JSON.parse(await deferred.promise);
+            
+            for (let esc = 0; esc < this.props.escCount; ++esc) {
+                escMetainfo[esc].isLicensed = result[esc] != 0;
+            };
+            
+        } catch(error) {
+            console.log('read license status failed', error.message);
         }
 
 
@@ -363,14 +369,9 @@ var Configurator = React.createClass({
             selectJESC: selectJESC
         });
     },
-    flashFirmwareImpl: async function(escIndex, escSettings, escMetainfo, flashImage, eepromImage, notifyProgress, restart) {
+    flashFirmwareImpl: async function(escIndex, escSettings, escMetainfo, flashImage, eepromImage, notifyProgress, restart, status) {
         var isAtmel = [ _4way_modes.AtmBLB, _4way_modes.AtmSK ].includes(escMetainfo.interfaceMode),
             self = this;
-
-        // rough estimate, each location gets erased, written and verified at least once
-        // SimonK does not erase pages, hence the factor of 2
-        var bytes_to_process = flashImage.byteLength * (isAtmel ? 2 : 3),
-            bytes_processed = 0;
 
         // start the actual flashing process
         const initFlashResponse = await _4way.initFlash(escIndex);
@@ -379,6 +380,9 @@ var Configurator = React.createClass({
 
 
         await _4way.initFlash(escIndex);
+        await _4way.read(0x1000, 0x10);
+        await _4way.read(0x1400, 0x10);
+        await _4way.read(0xfbf0, 0x10);
         var settingsArray;
         if (isAtmel) {
             settingsArray = (await _4way.readEEprom(0, BLHELI_LAYOUT_SIZE)).params;
@@ -416,8 +420,8 @@ var Configurator = React.createClass({
         }
 
         function updateProgress(bytes) {
-            bytes_processed += bytes;
-            notifyProgress(Math.min(Math.ceil(100 * bytes_processed / bytes_to_process), 100));
+            status.bytes_processed += bytes;
+            notifyProgress(Math.min(Math.ceil(100 * status.bytes_processed / status.bytes_to_process), 100));
         }
 
         function selectInterfaceAndFlash(message, escIndex, restart) {
@@ -455,7 +459,10 @@ var Configurator = React.createClass({
             // write `LJMP bootloader` to avoid bricking            
             .then(writeBootloaderFailsafe)
             // write & verify just erased locations
-            .then(writePages.bind(undefined, 0x02, 0x0D))
+            .then(writePages.bind(undefined, 0x02, 0x09))
+            // write & verify just erased locations
+            .then(writePages.bind(undefined, 0x0A, 0x0D))
+            .then(writePage.bind(undefined, 0x09))
             // write & verify first page
             .then(writePage.bind(undefined, 0x00))
             // erase second page
@@ -464,12 +471,15 @@ var Configurator = React.createClass({
              .then(writePage.bind(undefined, 0x0D));
             if (restart) {
                 promise = promise
+                .then(_4way.read.bind(_4way, 0x1000, 0x10))
+                .then(_4way.read.bind(_4way, 0x1400, 0x10))
+                .then(_4way.read.bind(_4way, 0xfbf0, 0x10))
                 .then(_4way.reset.bind(_4way, escIndex))
                 .then(_4way.exit.bind(_4way))
                 .then(_4way.cleanup.bind(_4way))
-                .delay(500)
+                .delay(300)
                 .then(MSP.send_message.bind(MSP,MSP_codes.MSP_SET_4WAY_IF, false, false,function(){}))
-                .delay(1000)
+                .delay(500)
                 .then(MSP.callbacks_cleanup.bind(MSP))
                 .then(_4way.start.bind(_4way))
             }
@@ -843,9 +853,7 @@ var Configurator = React.createClass({
                                     updateProgress(step)
                                 })
                         }
-                        promise = promise.then(
-                            verifyPages.bind(undefined,(address / BLHELI_SILABS_PAGE_SIZE, address / BLHELI_SILABS_PAGE_SIZE + 1)))
-                            .then(_4way.read.bind(_4way,0,1));
+                        promise = verifyPages(promise, address / BLHELI_SILABS_PAGE_SIZE, address / BLHELI_SILABS_PAGE_SIZE + 1);
                         break;
                     }
                 }
@@ -858,11 +866,12 @@ var Configurator = React.createClass({
             return writePages(page, page + 1)
         }
 
-        function verifyPages(begin, end) {
+        function verifyPages(promise, begin, end) {
             var begin_address   = begin * BLHELI_SILABS_PAGE_SIZE,
                 end_address     = end * BLHELI_SILABS_PAGE_SIZE,
-                step            = 0x80,
-                promise         = Q()
+                step            = 0x80
+///            ,
+ //               promise         = Q()
 
             for (var address = begin_address; address < end_address; address += step) {
                 promise = promise.then(_4way.read.bind(_4way, address, step))
@@ -899,13 +908,31 @@ var Configurator = React.createClass({
         });
     },
     flashAll: async function(hex, eep) {
+        function getBytesToFlash(flash) {
+            var bytesToFlash = 0;
+            for (var i = 0; i < flash.byteLength; i+=BLHELI_SILABS_PAGE_SIZE) {
+                for (var j = i; j < i + BLHELI_SILABS_PAGE_SIZE; j++) {
+                    if (flash[j] != 0xff) {
+                        bytesToFlash += BLHELI_SILABS_PAGE_SIZE;
+                        break;
+                    }
+                }
+            }
+            return bytesToFlash * 3;
+        }
+
         $('a.connect').addClass('disabled');
 
         this.setState({ isFlashing: true });
         
         try{
-        // @todo perform some sanity checks on size of flash
-        for (let i = 0; i < this.state.escsToFlash.length; ++i) {
+        // @todo perform some sanity checks on size of flash 
+            for (let i = 0; i < this.state.escsToFlash.length; ++i) {
+                const escIndex = this.state.escsToFlash[i];
+                await _4way.initFlash(escIndex);
+            }
+
+       for (let i = 0; i < this.state.escsToFlash.length; ++i) {
 
             const escIndex = this.state.escsToFlash[i];
 
@@ -992,7 +1019,8 @@ var Configurator = React.createClass({
                 });
 
                     const startTimestamp = Date.now()
-
+                var status = { "bytes_to_process" : getBytesToFlash(flash), "bytes_processed" : 0 };
+                    
                     if (!this.state.escMetainfo[escIndex].isActivated)
                     {
                         var URL = 'https://jflight.net/cgi-bin/encrypt/{1}/bl0102/0';
@@ -1007,17 +1035,18 @@ var Configurator = React.createClass({
                         var bshex = await deferred.promise;
                             
                         const bsFlash = fillImage(await parseHex(bshex), flashSize);
+                        status.bytes_to_process += getBytesToFlash(bsFlash);
                         await this.flashFirmwareImpl(escIndex, escSettings, escMetainfo, bsFlash, eeprom,
                                                      progress => {
                                                          this.setState({ flashingEscProgress: progress })
-                                                     }, true);
+                                                     }, true, status);
                         this.state.escMetainfo[escIndex].isActivated = true;
                     }
 
                     await this.flashFirmwareImpl(escIndex, escSettings, escMetainfo, flash, eeprom,
                         progress => {
                             this.setState({ flashingEscProgress: progress })
-                        }, isEncrypted);
+                        }, isEncrypted, status);
 
                     const elapsedSec = (Date.now() - startTimestamp) * 1.0e-3;
                     GUI.log(chrome.i18n.getMessage('escFlashingFinished', [ escIndex + 1, elapsedSec ]));

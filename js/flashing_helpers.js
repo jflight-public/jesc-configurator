@@ -137,22 +137,16 @@ function fillImage(data, size) {
 
 // @todo add Local Storage quota management?
 function getFromCache(key, url) {
-    // Look into Local Storage first
-    return getFromLocalStorage(key).catch(function (error) {
-        var deferred = Q.defer();
-
-        // File is not present in Local Storage, try GET it
-        $.get(url, function (content) {
-            // Cache file for further use
-            setToLocalStorage(key, content).then(function () {
-                return deferred.resolve(content);
-            }).done();
+    var deferred = Q.defer();
+    // File is not present in Local Storage, try GET it
+    $.get(url, function (content) {
+        // Cache file for further use
+           return deferred.resolve(content);
         }).fail(function () {
             return deferred.reject(new Error('File is unavailable'));
         });
 
-        return deferred.promise;
-    });
+    return deferred.promise;
 }
 
 function getFromLocalStorage(key) {

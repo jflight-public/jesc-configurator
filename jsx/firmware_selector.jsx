@@ -10,9 +10,7 @@ var FirmwareSelector = React.createClass({
         const escHint = this.props.escHint;
 
         var selectedEsc;
-        if (this.props.supportedESCs.layouts[BLHELI_TYPES.BLHELI_S_SILABS].hasOwnProperty(escHint) ||
-            this.props.supportedESCs.layouts[BLHELI_TYPES.SILABS].hasOwnProperty(escHint) ||
-            this.props.supportedESCs.layouts[BLHELI_TYPES.ATMEL].hasOwnProperty(escHint)) {
+        if (this.props.supportedESCs.layouts[BLHELI_TYPES.BLHELI_S_SILABS].hasOwnProperty(escHint)) {
             selectedEsc = escHint;
         }
 
