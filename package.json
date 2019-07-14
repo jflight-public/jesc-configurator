@@ -4,7 +4,7 @@
   },
   "name": "jesc-configurator",
   "description": "Cross-platform configuration tool for JESC on BLHeli_S based electronic speed controllers",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "main": "main_nwjs.html",
   "bg-script": "eventPage.js",
   "default_locale": "en",
@@ -18,7 +18,7 @@
   },
   "author": "JoeLucid & DieHertz",
   "license": "GPL-3.0",
-  "_dependencies": {
+  "dependencies": {
     "gulp-appdmg": "^1.0.3"
   },
   "devDependencies": {

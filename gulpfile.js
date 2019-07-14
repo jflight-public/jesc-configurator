@@ -316,31 +316,31 @@ function release_chromeos() {
 }
 
 // Create distribution package for macOS platform
-//function release_osx64() {
-//    var appdmg = require('gulp-appdmg');
+function release_osx64() {
+    var appdmg = require('gulp-appdmg');
 
-//    return gulp.src([])
-//        .pipe(appdmg({
-//            target: path.join(releaseDir, get_release_filename('macOS', 'dmg')),
-//            basepath: path.join(appsDir, pkg.name, 'osx64'),
-//            specification: {
-//                title: 'JESC Configurator',
-//                contents: [
-//                    { 'x': 448, 'y': 342, 'type': 'link', 'path': '/Applications' },
-//                    { 'x': 192, 'y': 344, 'type': 'file', 'path': pkg.name + '.app', 'name': 'JESC Configurator.app' }
-//                ],
-//                background: path.join(__dirname, 'images/dmg-background.png'),
-//                format: 'UDZO',
-//                window: {
-//                    size: {
-///                        width: 638,
-//                        height: 479
-//                    }
-//                }
-//            },
-//        })
-//    );
-//}
+    return gulp.src([])
+        .pipe(appdmg({
+            target: path.join(releaseDir, get_release_filename('macOS', 'dmg')),
+            basepath: path.join(appsDir, pkg.name, 'osx64'),
+            specification: {
+                title: 'JESC Configurator',
+                contents: [
+                    { 'x': 448, 'y': 342, 'type': 'link', 'path': '/Applications' },
+                  { 'x': 192, 'y': 344, 'type': 'file', 'path': pkg.name + '.app', 'name': 'JESC Configurator.app' }
+                ],
+                background: path.join(__dirname, 'images/dmg-background.png'),
+                format: 'UDZO',
+                window: {
+                   size: {
+                        width: 638,
+                        height: 479
+                    }
+                }
+            }
+        })
+    );
+}
 
 // Create distributable .zip files in ./release
 gulp.task('release', ['apps', 'clean-release'], function () {
@@ -368,8 +368,8 @@ gulp.task('release', ['apps', 'clean-release'], function () {
     }
         
     if (platforms.indexOf('osx64') !== -1) {
-//        release_osx64();
-        release('osx64');
+        release_osx64();
+//        release('osx64');
     }
 
     if (platforms.indexOf('win32') !== -1) {
