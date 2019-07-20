@@ -2,12 +2,12 @@
     "Telemetry" :
     [
         {
-        "name": "Dshot Telemetry Service 1.3 (use with betaflight PR)",
-        "url" : "https://jflight.net/cgi-bin/encrypt/{1}/tl0103/1",
-        "key" : "tl0103"
+        "name": "Dshot Telemetry Service 2.0 (use with jflight and betaflight PR)",
+        "url" : "https://jflight.net/cgi-bin/encrypt/{1}/tl0200/1",
+        "key" : "tl0200"
         },
         {
-        "name": "Dshot Telemetry Service 1.2 (use with jflight-blhelis)",
+        "name": "Dshot Telemetry Service 1.2 (use with old jflight-blhelis)",
         "url" : "https://jflight.net/cgi-bin/encrypt/{1}/tl0102/1",
         "key" : "tl0102"
         },
@@ -20,7 +20,12 @@
     "JESC" :
     [
         {
-        "name": "JESC 1.3",
+        "name": "JESC 1.4 (works with Telemetry 2.0)",
+        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/845cae9983a9e5e2623eff8c143912cbc7a3b20d/HEX/JESC_{0}_1_4.HEX",
+        "key" : "je0104"
+        },
+        {
+        "name": "JESC 1.3 (works with old jflight-blhelis",
         "url" : "https://raw.githubusercontent.com/jflight-public/jesc/f077d6532924ac57abed40a0f739e2d38d07b85a/HEX/JESC_{0}_1_3.HEX",
         "key" : "je0103"
         },

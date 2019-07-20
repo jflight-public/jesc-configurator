@@ -150,7 +150,7 @@ var Configurator = React.createClass({
                 escMetainfo[esc].isJesc = false;
 
                 if (isSiLabs) {
-                    const data3 = (await _4way.read(0xa0, 0x4)).params;
+                    const data3 = (await _4way.read(0xb0, 0x4)).params;
                     escMetainfo[esc].isJesc = buf2ascii(data3.subarray(0,4)) == 'JESC';
                     const data = (await _4way.read(0xfbfc, 3)).params;
                     if (data[0] != 0 && data[1] == 0xa5 && data[2] == 0xa5)
@@ -474,14 +474,8 @@ var Configurator = React.createClass({
                 .then(_4way.read.bind(_4way, 0x1000, 0x10))
                 .then(_4way.read.bind(_4way, 0x1400, 0x10))
                 .then(_4way.read.bind(_4way, 0xfbf0, 0x10))
-                .then(_4way.reset.bind(_4way, escIndex))
-                .then(_4way.exit.bind(_4way))
-                .then(_4way.cleanup.bind(_4way))
-                .delay(300)
-                .then(MSP.send_message.bind(MSP,MSP_codes.MSP_SET_4WAY_IF, false, false,function(){}))
+                .then(_4way.reboot.bind(_4way, escIndex))
                 .delay(500)
-                .then(MSP.callbacks_cleanup.bind(MSP))
-                .then(_4way.start.bind(_4way))
             }
             return promise;
         }
@@ -927,9 +921,6 @@ var Configurator = React.createClass({
         
         try{
         // @todo perform some sanity checks on size of flash 
-            for (let i = 0; i < this.props.escCount; ++i) {
-                await _4way.initFlash(i);
-            }
 
        for (let i = 0; i < this.state.escsToFlash.length; ++i) {
 

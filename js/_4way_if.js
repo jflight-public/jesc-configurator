@@ -265,6 +265,10 @@ var _4way = {
         return this.sendMessagePromised(_4way_commands.cmd_DeviceReset, [ target ], 0)
     },
 
+    reboot: function(target) {
+        return this.sendMessagePromised(_4way_commands.cmd_DeviceReset, [ target ], 0x01)
+    },
+
     exit: function() {
         return this.sendMessagePromised(_4way_commands.cmd_InterfaceExit)
     },
