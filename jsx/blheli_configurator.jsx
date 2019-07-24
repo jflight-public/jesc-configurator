@@ -60,6 +60,12 @@ var Configurator = React.createClass({
     readSetup: async function() {
         GUI.log(chrome.i18n.getMessage('readSetupStarted'));
         
+        var version = await(_4way.getProtocolVersion());
+        GUI.log("Protocol Version: " + version);
+        if (version < 108) {
+            GUI.log("Please install the BetaFlight firmware mentioned in the instructions first!");
+            return;
+        }
         $('a.connect').addClass('disabled');
 
         // disallow further requests until we're finished

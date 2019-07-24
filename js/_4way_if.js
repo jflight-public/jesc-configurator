@@ -240,6 +240,10 @@ var _4way = {
         return this.sendMessagePromised(_4way_commands.cmd_DeviceInitFlash, [ target ], 0).delay(250)
     },
 
+    getProtocolVersion: function(target) {
+        return this.sendMessagePromised(_4way_commands.cmd_ProtocolGetVersion, [ 0 ], 0).then(msg => msg.params[0]);
+    },
+
     pageErase: function(page) {
         return this.sendMessagePromised(_4way_commands.cmd_DevicePageErase, [ page ], 0)
     },
