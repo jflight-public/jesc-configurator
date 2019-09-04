@@ -1,6 +1,6 @@
 # jesc-configurator
 
-Google Chrome application for JESC firmware flashing and configuration.
+Google Chrome application for JESC firmware flashing and configuration. Learn more about JESC [Here](https://jflight.net). JESC configurator is based on [blheli-configurator](https://github.com/blheli-configurator/blheli-configurator/releases).
 
 ## Disclaimer
 
