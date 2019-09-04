@@ -1,6 +1,6 @@
 function fetchJSON(key, remoteURL, localURL) {
     // try loading from a remote url
-    return fetch(remoteURL)
+    return fetch(remoteURL, {cache: "no-store"})
     .then(response => {
         if (!response.ok) {
             throw new Error(response.statusText);
