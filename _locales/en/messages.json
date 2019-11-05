@@ -151,6 +151,15 @@
     "escFeaturesHelp": {
         "message": "<strong>Note:</strong> Make sure you've taken the propellers <strong>OFF</strong> before doing anything on this tab.<br /><strong>Note:</strong> Connect power to the ESCs."
     },
+    "escFeaturesHelpUnlicensed": {
+        "message": "<strong>Note:</strong> Your ESCs are unlicensed. You may flash and run <strong>JESC</strong> without a license using the <strong>\"Flash All\"</strong> button. Consider purchasing licenses on <strong>jflight.net</strong> to support the project and revolutionize your flight experience with the <strong>RPM Filter</strong>!<br> Once you have purchased licenses use the <strong>\"License All\"</strong> button to bind your licenses to these ESCs."
+    },
+    "escWarnTelemetry": {
+        "message": "<strong>Note:</strong> Don't forget for flash the <strong>Telemetry Service</strong> using <strong>\"Flash All Telemetry\"</strong> to enable bidirectinal dshot for RPM Filtering!"
+    },
+    "escWarnJESC": {
+        "message": "<strong>Note:</strong> Your ESCs are licensed but not yet activated. Flash <strong>JESC</strong> first using <strong>\"Flash All\"</strong>. Afterwards flash the <strong>Telemetry Service</strong> using <strong>\"Flash All Telemetry\"</strong>."
+    },
     "escMotorDirection": {
         "message": "Motor Direction"
     },

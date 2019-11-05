@@ -242,9 +242,9 @@ gulp.task('apps', ['dist', 'clean-apps'], function (done) {
         buildDir: appsDir,
         platforms: platforms,
         flavor: 'normal',
-        macIcns: './images/icon_128.icns',
+        macIcns: './images/jesc.icns',
         macPlist: { 'CFBundleDisplayName': 'JESC Configurator'}
-//        ,winIco: './images/icon_128.ico',
+//        ,winIco: './images/jesc.ico',
     });
     builder.on('log', console.log);
     builder.build(function (err) {
@@ -268,9 +268,9 @@ gulp.task('debug', ['dist', 'clean-debug'], function (done) {
         buildDir: debugDir,
         platforms: platforms,
         flavor: 'sdk',
-        macIcns: './images/icon_128.icns',
+        macIcns: './images/jesc.icns',
         macPlist: { 'CFBundleDisplayName': 'JESC Configurator'}
-//        ,    winIco: './images/icon_128.ico',
+//        ,    winIco: './images/jesc.ico',
     });
     builder.on('log', console.log);
     builder.build(function (err) {

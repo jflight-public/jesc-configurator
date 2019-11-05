@@ -236,6 +236,14 @@ webview {
     margin-bottom: 20px;
 }
 
+.tab-esc .alert {
+    margin-bottom: 20px;
+}
+
+.tab-esc .info {
+    margin-bottom: 20px;
+}
+
 .tab-esc .log_btn {
     float: left;
     margin-left: 15px;

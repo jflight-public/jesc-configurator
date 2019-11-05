@@ -113,22 +113,22 @@ input[type="number"]::-webkit-inner-spin-button {
 .headerbar {
     height:110px;
     width:100%;
-    background-image: -webkit-linear-gradient(top, rgba(140, 140, 140, 0.8), rgba(140, 140, 140, 0.8));
+    background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 1.0) 20%, rgba(140, 140, 140, 0.8));
 }
 
 
 #logo {
-    background: url('./images/icon_128.png');
+    background: url('./images/Logo_JESC.png');
     position: relative;
     float: left;
-    height: 90px;
+    height: 110px;
     z-index: 0;
     background-repeat: no-repeat;
     width: 340px;
     background-position: left center;
     background-size: contain;
-    margin-left: 23px;
-    margin-top: 10px;
+    margin-left: 15px;
+    margin-top: 0px;
 }
 
 .logo_text {
@@ -493,6 +493,28 @@ dialog {
 .note {
     background-color: #fff7cd;
     border: 1px solid #ffe55f;
+    margin-bottom: 7px;
+    margin-top: 3px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-family: 'open_sansregular', Arial;
+}
+
+/* Note */
+.alert {
+    background-color: #ffa0a0;
+    border: 1px solid #ff8080;
+    margin-bottom: 7px;
+    margin-top: 3px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-family: 'open_sansregular', Arial;
+}
+
+/* Note */
+.info {
+    background-color: #a0ffa0;
+    border: 1px solid #80ff80;
     margin-bottom: 7px;
     margin-top: 3px;
     border-radius: 3px;

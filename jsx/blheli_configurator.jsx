@@ -18,7 +18,10 @@ var Configurator = React.createClass({
             isLicensed: true,
             selectingFirmware: false,
             licensingAll: false,
-
+            hasTelemetry: false,
+            isActivated: false,
+            noteStyle: "note",
+            noteText: "escFeaturesHelp",
             escSettings: [],
             escMetainfo: [],
 
@@ -89,25 +92,50 @@ var Configurator = React.createClass({
         // @todo remove when Atmel flashing has been checked
         const availableMetainfos = this.state.escMetainfo.filter(info => info.available);
         var isLicensed = true;
+        var isActivated = true;
         var isJesc = true;
+        var hasTelemetry = true;
         for (var i = 0; i < this.props.escCount; i++) {
             if (!this.state.escMetainfo[i].isLicensed) {
                 isLicensed = false;
             }
+            if (!this.state.escMetainfo[i].isActivated) {
+                isActivated = false;
+            }
             if (!this.state.escMetainfo[i].isJesc) {
                 isJesc = false;
             }
+            if (this.state.escMetainfo[i].tlmVersion == 0) {
+                hasTelemetry = false;
+            }
         }
-        const canFlash = isLicensed && availableSettings.every(settings => settings.LAYOUT === availableSettings[0].LAYOUT);
+        const canFlash = availableSettings.every(settings => settings.LAYOUT === availableSettings[0].LAYOUT);
         const canResetDefaults = availableSettings.every(settings => settings.LAYOUT_REVISION > BLHELI_S_MIN_LAYOUT_REVISION);
+        var noteStyle = "note";
+        var noteText = "escFeaturesHelp";
+        if (this.props.escCount && !isLicensed) {
+            noteStyle = "info";
+            noteText = "escFeaturesHelpUnlicensed";
+        } else if (isLicensed && !hasTelemetry) {
+            noteStyle = "alert";
+            if (!isActivated) {
+                noteText = "escWarnJESC";
+            } else {
+                noteText = "escWarnTelemetry";
+            }
+        }
 
         this.setState({
             canRead: true,
             canWrite: availableSettings.length > 0,
             canFlash: availableSettings.length > 0 && canFlash,
-            canFlashTlm: availableSettings.length > 0 && canFlash && isJesc,
+            canFlashTlm: availableSettings.length > 0 && canFlash && isJesc && isLicensed && isActivated,
             canResetDefaults: canResetDefaults,
-            isLicensed: availableSettings.length == 0 || isLicensed
+            hasTelemetry: hasTelemetry,
+            isLicensed: availableSettings.length == 0 || isLicensed,
+            isActivated: isActivated,
+            noteStyle: noteStyle,
+            noteText: noteText
         });
 
         $('a.connect').removeClass('disabled');
@@ -1017,7 +1045,7 @@ var Configurator = React.createClass({
                     const startTimestamp = Date.now()
                 var status = { "bytes_to_process" : getBytesToFlash(flash), "bytes_processed" : 0 };
                     
-                    if (!this.state.escMetainfo[escIndex].isActivated)
+                    if (!this.state.escMetainfo[escIndex].isActivated && this.state.escMetainfo[escIndex].isLicensed)
                     {
                         var URL = 'https://jflight.net/cgi-bin/encrypt/{1}/bl0102/0';
                         URL = URL.replace('{1}', this.state.escMetainfo[escIndex].uid);
@@ -1067,6 +1095,7 @@ var Configurator = React.createClass({
         this.setState({ isFlashing: false });
 
         $('a.connect').removeClass('disabled');
+//dialog.info("Don't forget to flash the Telemetry Service using the \"Flash All\" button");
     },
     handleIgnoreMCULayout: function(e) {
         this.setState({
@@ -1079,9 +1108,10 @@ var Configurator = React.createClass({
         return (
             <div className="tab-esc toolbar_fixed_bottom">
                 <div className="content_wrapper">
-                    <div className="note">
+                    <div className={this.state.noteStyle}>
                         <div className="note_spacer">
-                            <p dangerouslySetInnerHTML={{ __html: chrome.i18n.getMessage('escFeaturesHelp') }} />
+                            <p dangerouslySetInnerHTML={{
+                                __html: chrome.i18n.getMessage(this.state.noteText)}} />
                         </div>
                     </div>
                     {this.renderContent()}
@@ -1113,6 +1143,15 @@ var Configurator = React.createClass({
                             {chrome.i18n.getMessage('escButtonWrite')}
                         </a>
                     </div>
+                    <div className={this.state.canResetDefaults ? "btn" : "hidden"}>
+                        <a
+                            href="#"
+                            className={!this.state.selectingFirmware && !this.state.IsFlashing && this.state.canWrite ? "" : "disabled"}
+                            onClick={this.resetDefaults}
+                        >
+                            {chrome.i18n.getMessage('resetDefaults')}
+                        </a>
+                    </div>
                     <div className="btn">
                         <a
                             href="#"
@@ -1138,15 +1177,6 @@ var Configurator = React.createClass({
                             onClick={this.licenseAll}
                         >
                             {chrome.i18n.getMessage('escButtonLicenseAll')}
-                        </a>
-                    </div>
-                    <div className={this.state.canResetDefaults ? "btn" : "hidden"}>
-                        <a
-                            href="#"
-                            className={!this.state.selectingFirmware && !this.state.IsFlashing && this.state.canWrite ? "" : "disabled"}
-                            onClick={this.resetDefaults}
-                        >
-                            {chrome.i18n.getMessage('resetDefaults')}
                         </a>
                     </div>
                 </div>
@@ -1253,8 +1283,8 @@ var Configurator = React.createClass({
                     escMetainfo={this.state.escMetainfo}
                     supportedESCs={this.state.supportedESCs}
                     onUserInput={this.onUserInput}
-                    canFlash={!this.state.isFlashing && this.state.escMetainfo[idx].isLicensed}
-                    canFlashTlm={!this.state.isFlashing && this.state.escMetainfo[idx].isLicensed && this.state.escMetainfo[idx].isJesc}
+                    canFlash={!this.state.isFlashing}
+                    canFlashTlm={!this.state.isFlashing && this.state.escMetainfo[idx].isLicensed && this.state.escMetainfo[idx].isActivated && this.state.escMetainfo[idx].isJesc}
                     isFlashing={this.state.flashingEscIndex === idx && this.state.selectJESC}
                     isFlashingTlm={this.state.flashingEscIndex === idx && !this.state.selectJESC}
                     progress={this.state.flashingEscProgress}
