@@ -11,13 +11,13 @@
     [
         {
         "name": "JESC 2.2 - 24khz PWM",
-        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/305ccda7fe94dd03423aba69db7ac86d59d615fe/HEX/JESC_{0}_24_2_2.HEX",
+        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/39f9ce92cad6fe120241f1cebefcf5ab3c751b3b/HEX/JESC_{0}_24_2_2.HEX",
         "key" : "je020224"
         }
         ,
         {
         "name": "JESC 2.2 - 48khz PWM (early access)",
-        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/305ccda7fe94dd03423aba69db7ac86d59d615fe/HEX/JESC_{0}_48_2_2.HEX",
+        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/39f9ce92cad6fe120241f1cebefcf5ab3c751b3b/HEX/JESC_{0}_48_2_2.HEX",
         "key" : "je020248"
         },
         {

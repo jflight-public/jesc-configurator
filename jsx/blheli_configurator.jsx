@@ -35,6 +35,7 @@ var Configurator = React.createClass({
         this.updateVersionsMetainfo();
         const interval = setInterval(this.updateVersionsMetainfo, METAINFO_UPDATE_INTERVAL_MS);
 
+
         this.setState({
             updateInterval: interval
         });

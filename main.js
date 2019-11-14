@@ -109,6 +109,33 @@ $(document).ready(function () {
     // translate to user-selected language
     localize();
 
+    $.get("https://jflight.net/jcfg_version.json", function (content) {
+        var result = content;
+        GUI.log("Installed Configurator Version: " + chrome.runtime.getManifest().version + ", latest version: " + result.latestVersion);
+        var v1 = result.requiredVersion.split(".");
+        var v2 = chrome.runtime.getManifest().version.split(".");
+        googleAnalytics.sendEvent('Configurator', 'Version', result.version);
+        var invalidVersion = false;
+        for (var i = 0; i < 3; i++) {
+            var a = parseInt(v1[i]);
+            var b = parseInt(v2[i]);
+            if (b > a) {
+                invalidVersion = false;
+                break;
+            }
+            if (b < a) {
+                invalidVersion = true;
+                break;
+            }
+        }
+        if (invalidVersion) {
+            GUI.log("<strong style=\"color:orangered\">Please Update JESC-Configurator!</strong><a style=\"color:white\" href=\"https://github.com/jflight-public/jesc-configurator/releases\" target=\"_blank\"> Click here to update</a> - Installed Configurator Version: " + chrome.runtime.getManifest().version + ", Required Version: " + result.requiredVersion);
+            $('a.connect').addClass('disabled');
+        }
+    }).fail(function () {
+        GUI.log("couldn't retrieve version file due to internet availability");
+    });
+    
     // alternative - window.navigator.appVersion.match(/Chrome\/([0-9.]*)/)[1];
     GUI.log('Running - OS: <strong>' + GUI.operating_system + '</strong>, ' +
         'Chrome: <strong>' + window.navigator.appVersion.replace(/.*Chrome\/([0-9.]*).*/, "$1") + '</strong>, ' +
