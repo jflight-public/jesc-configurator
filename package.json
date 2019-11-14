@@ -4,7 +4,7 @@
   },
   "name": "jesc-configurator",
   "description": "Cross-platform configuration tool for JESC on BLHeli_S based electronic speed controllers",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "main": "main_nwjs.html",
   "bg-script": "eventPage.js",
   "default_locale": "en",
