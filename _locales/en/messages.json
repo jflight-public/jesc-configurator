@@ -155,7 +155,7 @@
         "message": "<strong>Note:</strong> Your ESCs are unlicensed. You may flash and run <strong>JESC</strong> without a license using the <strong>\"Flash All\"</strong> button. Consider purchasing licenses on <strong>jflight.net</strong> to support the project and revolutionize your flight experience with the <strong>RPM Filter</strong>!<br> Once you have purchased licenses use the <strong>\"License All\"</strong> button to bind your licenses to these ESCs."
     },
     "escWarnLocked": {
-        "message": "<strong>Note:</strong> Your ESCs have been locked by the manufacturer. Before installing the Telemetry Service they need to unlocked using the C2 interface!";
+        "message": "<strong>Note:</strong> Your ESCs have been locked by the manufacturer. Before installing the Telemetry Service they need to unlocked using the C2 interface!"
     },
     "escWarnTelemetry": {
         "message": "<strong>Note:</strong> Don't forget for flash the <strong>Telemetry Service</strong> using <strong>\"Flash All Telemetry\"</strong> to enable bidirectinal dshot for RPM Filtering!"
