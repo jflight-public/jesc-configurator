@@ -26,8 +26,11 @@ var IndividualSettings = React.createClass({
             if (layout in this.props.supportedESCs.layouts[BLHELI_TYPES.BLHELI_S_SILABS]) {
                 make = this.props.supportedESCs.layouts[BLHELI_TYPES.BLHELI_S_SILABS][layout].name
                 if (escMetainfo.isJesc) {
-                    make = make.replace('-H-', '');
+                    make = make.replace('-H-', 'H');
+                    make = make.replace('-L-', 'L');
                     make = "JESC-" + make;
+                    if (escMetainfo.pwm != '  ')
+                        make += '-' + escMetainfo.pwm;
                 }
                 else make = "BLHELIS-" + make;
             }
@@ -40,7 +43,7 @@ var IndividualSettings = React.createClass({
         var title = 'ESC ' + (this.props.escIndex + 1) + ': ' + make + ' (' +
             escSettings.MAIN_REVISION + '.' + escSettings.SUB_REVISION + ')' + (name.length > 0 ? ', ' + name : '');
         
-        if (escMetainfo.isJesc && escMetainfo.tlmVersion != 0) {
+        if (!escMetainfo.isL && escMetainfo.isJesc && escMetainfo.tlmVersion != 0) {
             title += ' with Telemetry (' + escMetainfo.tlmVersion + ')';
         }
         title += '  - ';

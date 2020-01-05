@@ -17,6 +17,7 @@ var Configurator = React.createClass({
             isFlashing: false,
             isLicensed: true,
             isLocked: false,
+            isL: false,
             selectingFirmware: false,
             licensingAll: false,
             hasTelemetry: false,
@@ -98,12 +99,16 @@ var Configurator = React.createClass({
         var isLocked = false;
         var isJesc = true;
         var hasTelemetry = true;
+        var isL = false;
         for (var i = 0; i < this.props.escCount; i++) {
             if (!this.state.escMetainfo[i].isLicensed) {
                 isLicensed = false;
             }
             if (!this.state.escMetainfo[i].isActivated) {
                 isActivated = false;
+            }
+            if (this.state.escMetainfo[i].isL) {
+                isL = true;
             }
             if (this.state.escMetainfo[i].isLocked) {
                 isLocked = true;
@@ -125,7 +130,7 @@ var Configurator = React.createClass({
             noteStyle = "alert";
             noteText = "escWarnLocked";
         } else {
-            if (this.props.escCount && !isLicensed) {
+            if (this.props.escCount && !isLicensed && !isL) {
                 noteStyle = "info";
                 noteText = "escFeaturesHelpUnlicensed";
             } else if (isLicensed && !hasTelemetry) {
@@ -142,14 +147,15 @@ var Configurator = React.createClass({
             canRead: true,
             canWrite: availableSettings.length > 0,
             canFlash: availableSettings.length > 0 && canFlash,
-            canFlashTlm: availableSettings.length > 0 && canFlash && isJesc && isLicensed && isActivated,
+            canFlashTlm: availableSettings.length > 0 && canFlash && isJesc && isLicensed && isActivated && !isL,
             canResetDefaults: canResetDefaults,
             hasTelemetry: hasTelemetry,
             isLicensed: availableSettings.length == 0 || isLicensed,
             isActivated: isActivated,
             isLocked: isLocked,
             noteStyle: noteStyle,
-            noteText: noteText
+            noteText: noteText,
+            isL: isL
         });
 
         $('a.connect').removeClass('disabled');
@@ -193,14 +199,23 @@ var Configurator = React.createClass({
                 var isSiLabs = [ _4way_modes.SiLC2, _4way_modes.SiLBLB ].includes(interfaceMode),
                     settingsArray = null;
 
+                const MCU = findMCU(escMetainfo[esc].signature, this.state.supportedESCs.signatures[BLHELI_TYPES.BLHELI_S_SILABS]);
+                if (MCU && MCU.name == 'EFM8BB10x') {
+                    escMetainfo[esc].isL = true;
+                } else {
+                    escMetainfo[esc].isL = false;
+                }
                 escMetainfo[esc].isLocked = false;
                 escMetainfo[esc].isActivated = false;
                 escMetainfo[esc].tlmVersion = undefined;
                 escMetainfo[esc].isJesc = false;
 
                 if (isSiLabs) {
-                    const data3 = (await _4way.read(0xb0, 0x4)).params;
+                    const data3 = (await _4way.read(0xb0, 0x10)).params;
                     escMetainfo[esc].isJesc = buf2ascii(data3.subarray(0,4)) == 'JESC';
+                    if (escMetainfo[esc].isJesc) {
+                        escMetainfo[esc].pwm = buf2ascii(data3.subarray(8,10));
+                    }
                     const data = (await _4way.read(0xfbfc, 4)).params;
                     if (data[0] != 0 && data[1] == 0xa5 && data[2] == 0xa5)
                         escMetainfo[esc].isActivated = true;
@@ -208,10 +223,12 @@ var Configurator = React.createClass({
                         escMetainfo[esc].isLocked = true;
                     }
 
-                    const data2 = (await _4way.read(0x3e00, 5)).params;
-                    escMetainfo[esc].tlmVersion = 0;
-                    if (buf2ascii(data2.subarray(0,3)) == 'TLX') {
-                        escMetainfo[esc].tlmVersion = data2[3] + '.' + data2[4];
+                    if (!escMetainfo[esc].isL) {
+                        const data2 = (await _4way.read(0x3e00, 5)).params;
+                        escMetainfo[esc].tlmVersion = 0;
+                        if (buf2ascii(data2.subarray(0,3)) == 'TLX') {
+                            escMetainfo[esc].tlmVersion = data2[3] + '.' + data2[4];
+                        }
                     }
                     
                     settingsArray = (await _4way.read(BLHELI_SILABS_EEPROM_OFFSET, BLHELI_LAYOUT_SIZE)).params;
@@ -237,7 +254,9 @@ var Configurator = React.createClass({
                     var timing = 0;
                     for (var i = 0; i < 0x300 - 5; i++) {
                         if (data[i] == 0xf9 && data[i+1] == 0xc3 && data[i+2] == 0xe8 && data[i+3] == 0x94) {
-                            timing = data[i+4] / 2;
+                            timing = data[i+4];
+                            if (!escMetainfo[esc].isL)
+                                timing /= 2;
                             break;
                         }
                     }
@@ -1103,7 +1122,7 @@ var Configurator = React.createClass({
                     const startTimestamp = Date.now()
                 var status = { "bytes_to_process" : getBytesToFlash(flash), "bytes_processed" : 0 };
                     
-                    if (!this.state.escMetainfo[escIndex].isActivated && this.state.escMetainfo[escIndex].isLicensed)
+                    if (!this.state.escMetainfo[escIndex].isL && !this.state.escMetainfo[escIndex].isActivated && this.state.escMetainfo[escIndex].isLicensed)
                     {
                         var URL = 'https://jflight.net/cgi-bin/encrypt/{1}/bl0102/0';
                         URL = URL.replace('{1}', this.state.escMetainfo[escIndex].uid);
@@ -1231,7 +1250,7 @@ var Configurator = React.createClass({
                     <div className="btn">
                         <a
                             href="#"
-                            className={!this.state.selectingFirmware && !this.state.isLicensed && this.props.escCount > 0 && !this.state.licensingAll && !this.state.isLocked ? "" : "disabled"}
+                            className={!this.state.selectingFirmware && !this.state.isLicensed && !this.state.isL && this.props.escCount > 0 && !this.state.licensingAll && !this.state.isLocked ? "" : "disabled"}
                             onClick={this.licenseAll}
                         >
                             {chrome.i18n.getMessage('escButtonLicenseAll')}

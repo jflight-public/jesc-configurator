@@ -133,6 +133,8 @@ var FirmwareSelector = React.createClass({
         
         var options = [];
         versions.forEach((version, idx) => {
+            if (version.hasOwnProperty('supportsL') && version.supportsL == false && this.state.selectedEsc.includes('_L_'))
+                return;
             if (version.multishot && this.state.selectedMode !== blheliModeToString(BLHELI_MODES.MULTI)) {
                 return;
             }
@@ -180,6 +182,7 @@ var FirmwareSelector = React.createClass({
             // @todo this replace-based conversion does not work for some ESC files, add a lookup table
             const url = version.url.format(
                 escs[this.state.selectedEsc].name.replace('-H-', '').toUpperCase(),
+                escs[this.state.selectedEsc].name.replace('-H-', 'H').replace('-L-', 'L').toUpperCase(),
                 this.state.selectedMode
             );
 

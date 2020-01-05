@@ -2,9 +2,14 @@
     "Telemetry" :
     [
         {
-        "name": "Dshot Telemetry Service 2.1",
+        "name": "Dshot Telemetry Service 2.1 (JESC 2.2)",
         "url" : "https://jflight.net/cgi-bin/encrypt/{1}/tl0201/1",
         "key" : "tl0201"
+        },
+        {
+        "name": "Dshot Telemetry Service 2.3 Beta 1 (JESC 2.3)",
+        "url" : "https://jflight.net/cgi-bin/encrypt/{1}/tl0203/1",
+        "key" : "tl0203"
         }
     ],
     "JESC" :
@@ -16,14 +21,37 @@
         }
         ,
         {
-        "name": "JESC 2.2 - 48khz PWM (early access)",
+        "name": "JESC 2.2 - 48khz PWM",
         "url" : "https://raw.githubusercontent.com/jflight-public/jesc/39f9ce92cad6fe120241f1cebefcf5ab3c751b3b/HEX/JESC_{0}_48_2_2.HEX",
         "key" : "je020248"
         },
         {
-        "name": "JESC 2.1 - 24khz PWM",
-        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/26e5e508ac0e1cc772a9e83ee1051129db2b5f34/HEX/JESC_{0}_24_2_1.HEX",
-        "key" : "je020124"
+        "name": "JESC 2.2 - 24khz PWM, no damping (experimental)",
+        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/no_damping/HEX/JESC_{0}_24_2_2.HEX",
+        "key" : "je020248"
+        },
+        {
+        "name": "JESC 2.2 - 48khz PWM, no damping (experimental)",
+        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/no_damping/HEX/JESC_{0}_48_2_2.HEX",
+        "key" : "je020248"
+        },
+        {
+        "name": "JESC 2.3 Beta 1 - 24khz PWM (recommended for 3in and up)",
+        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/578eea01578dae5c4a09b938b16f86cd033fc01d/HEX/JESC_{1}_24_2_3.HEX",
+        "key" : "je020324"
+        }
+        ,
+        {
+        "name": "JESC 2.3 Beta 1 - 48khz PWM (recommended for whoops)",
+        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/578eea01578dae5c4a09b938b16f86cd033fc01d/HEX/JESC_{1}_48_2_3.HEX",
+        "key" : "je020348"
+        }
+        ,
+        {
+        "name": "JESC 2.3 Beta 1 - 96khz PWM (experimental for whoops)",
+        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/578eea01578dae5c4a09b938b16f86cd033fc01d/HEX/JESC_{1}_96_2_3.HEX",
+        "key" : "je020396",
+        "supportsL" : false
         }
     ]
 }
