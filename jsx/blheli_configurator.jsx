@@ -176,7 +176,7 @@ var Configurator = React.createClass({
             return;
         }
 
-        var uidQuery = 'https://jflight.net/checkuids.php?';
+        var uidQuery = '';
         var uidCount = 1;
         for (let esc = 0; esc < this.props.escCount; ++esc) {
             escSettings.push({});
@@ -211,33 +211,34 @@ var Configurator = React.createClass({
                 escMetainfo[esc].isJesc = false;
 
                 if (isSiLabs) {
+                    settingsArray = (await _4way.read(BLHELI_SILABS_EEPROM_OFFSET, BLHELI_LAYOUT_SIZE)).params;
                     const data3 = (await _4way.read(0xb0, 0x10)).params;
                     escMetainfo[esc].isJesc = buf2ascii(data3.subarray(0,4)) == 'JESC';
                     if (escMetainfo[esc].isJesc) {
                         escMetainfo[esc].pwm = buf2ascii(data3.subarray(8,10));
                     }
-                    const data = (await _4way.read(0xfbfc, 4)).params;
-                    if (data[0] != 0 && data[1] == 0xa5 && data[2] == 0xa5)
-                        escMetainfo[esc].isActivated = true;
-                    if (data[3] != 255) {
-                        escMetainfo[esc].isLocked = true;
-                    }
-
                     if (!escMetainfo[esc].isL) {
+                        const data = (await _4way.read(0xfbfc, 4)).params;
+                        if (data[0] != 0 && data[1] == 0xa5 && data[2] == 0xa5)
+                            escMetainfo[esc].isActivated = true;
+                        if (data[3] != 255) {
+                            escMetainfo[esc].isLocked = true;
+                        }
+                        
                         const data2 = (await _4way.read(0x3e00, 5)).params;
                         escMetainfo[esc].tlmVersion = 0;
                         if (buf2ascii(data2.subarray(0,3)) == 'TLX') {
                             escMetainfo[esc].tlmVersion = data2[3] + '.' + data2[4];
                         }
-                    }
                     
-                    settingsArray = (await _4way.read(BLHELI_SILABS_EEPROM_OFFSET, BLHELI_LAYOUT_SIZE)).params;
-                    var uidHex = '';
-                    const uid = (await _4way.read(0xffc0, 16)).params;
-                    uid.forEach((elem) => { var h = '0' + elem.toString(16); uidHex += h.slice(h.length - 2, h.length)});
-                    GUI.log('uid: ' + uidHex);
-                    escMetainfo[esc].uid = uidHex;
-                    uidQuery += 'uid' + uidCount++ + '=' + uidHex + '&';
+                        var uidHex = '';
+                        const uid = (await _4way.read(0xffc0, 16)).params;
+                        uid.forEach((elem) => { var h = '0' + elem.toString(16); uidHex += h.slice(h.length - 2, h.length)});
+                        GUI.log('uid: ' + uidHex);
+                        escMetainfo[esc].uid = uidHex;
+                        if (uidQuery == '') uidQuery = 'https://jflight.net/checkuids.php?';
+                        uidQuery += 'uid' + uidCount++ + '=' + uidHex + '&';
+                    }
 
                 } else {
                     settingsArray = (await _4way.readEEprom(0, BLHELI_LAYOUT_SIZE)).params;
@@ -305,19 +306,25 @@ var Configurator = React.createClass({
         }
          
         try {
-            var deferred = Q.defer();
-            $.get(uidQuery, function (content) {
-                return deferred.resolve(content);
-            }).fail(function () {
-                GUI.log("couldn't retrieve esc status due to internet availability");
-                return deferred.reject(new Error('File is unavailable'));
-            })
-            ;
-            var result = JSON.parse(await deferred.promise);
-            
-            for (let esc = 0; esc < this.props.escCount; ++esc) {
-                escMetainfo[esc].isLicensed = result[esc] != 0;
-            };
+            if (uidQuery != '') {
+                var deferred = Q.defer();
+                $.get(uidQuery, function (content) {
+                    return deferred.resolve(content);
+                }).fail(function () {
+                    GUI.log("couldn't retrieve esc status due to internet availability");
+                    return deferred.reject(new Error('File is unavailable'));
+                })
+                ;
+                var result = JSON.parse(await deferred.promise);
+                
+                for (let esc = 0; esc < this.props.escCount; ++esc) {
+                    escMetainfo[esc].isLicensed = result[esc] != 0;
+                };
+            } else {
+                for (let esc = 0; esc < this.props.escCount; ++esc) {
+                    escMetainfo[esc].isLicensed = false;
+                }
+            }
             
         } catch(error) {
             console.log('read license status failed', error.message);
@@ -490,7 +497,9 @@ var Configurator = React.createClass({
         await _4way.initFlash(escIndex);
         await _4way.read(0x1000, 0x10);
         await _4way.read(0x1400, 0x10);
-        await _4way.read(0xfbf0, 0x10);
+        if (!escMetainfo.isL) {
+            await _4way.read(0xfbf0, 0x10);
+        }
         var settingsArray;
         if (isAtmel) {
             settingsArray = (await _4way.readEEprom(0, BLHELI_LAYOUT_SIZE)).params;
