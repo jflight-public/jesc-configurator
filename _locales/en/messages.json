@@ -262,6 +262,9 @@
     "escButtonSaveLog": {
         "message": "Save Debug Log"
     },
+    "errorVersion": {
+        "message": "Install Betaflight >= 4.1 to activate or update Telemetry"
+    },
     "escIgnoreInappropriateMCULayout": {
         "message": "Ignore inappropriate MCU and Layout?"
     },

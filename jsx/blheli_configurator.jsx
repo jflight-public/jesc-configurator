@@ -66,12 +66,8 @@ var Configurator = React.createClass({
     readSetup: async function() {
         GUI.log(chrome.i18n.getMessage('readSetupStarted'));
         
-        var version = await(_4way.getProtocolVersion());
-        GUI.log("Protocol Version: " + version);
-        if (version < 108) {
-            GUI.log("Please install the BetaFlight firmware mentioned in the instructions first!");
-            return;
-        }
+        this.version = await(_4way.getProtocolVersion());
+        GUI.log("Protocol Version: " + this.version);
         $('a.connect').addClass('disabled');
 
         // disallow further requests until we're finished
@@ -126,19 +122,26 @@ var Configurator = React.createClass({
         
         var noteStyle = "note";
         var noteText = "escFeaturesHelp";
-        if (isLocked) {
-            noteStyle = "alert";
-            noteText = "escWarnLocked";
+        if (this.noteStyle == 'error') {
+            this.noteStyle = '';
+            noteStyle = 'alert';
+            noteText = this.noteText;
         } else {
-            if (this.props.escCount && !isLicensed && !isL) {
-                noteStyle = "info";
-                noteText = "escFeaturesHelpUnlicensed";
-            } else if (isLicensed && !hasTelemetry) {
+            var noteText = "escFeaturesHelp";
+            if (isLocked) {
                 noteStyle = "alert";
-                if (!isActivated) {
-                    noteText = "escWarnJESC";
-                } else {
-                    noteText = "escWarnTelemetry";
+                noteText = "escWarnLocked";
+            } else {
+                if (this.props.escCount && !isLicensed && !isL) {
+                    noteStyle = "info";
+                    noteText = "escFeaturesHelpUnlicensed";
+                } else if (isLicensed && !hasTelemetry) {
+                    noteStyle = "alert";
+                    if (!isActivated) {
+                        noteText = "escWarnJESC";
+                    } else {
+                        noteText = "escWarnTelemetry";
+                    }
                 }
             }
         }
@@ -812,6 +815,12 @@ var Configurator = React.createClass({
                 if (payload == 'TLX' || payload == 'TLY') isEncrypted = true;
             }
             if (isEncrypted) {
+                if (self.version < 108) {
+                    self.noteStyle = 'error';
+                    self.noteText = 'errorVersion';
+                    GUI.log("Please install BetaFlight >= 4.1 before flashing Telemetry!");
+                    throw new Error('Version mismatch');
+                }
                 for (var i = BLHELI_SILABS_EEPROM_OFFSET; i < BLHELI_SILABS_EEPROM_OFFSET + BLHELI_LAYOUT_SIZE; i++) {
                     flashImage[i] = escSettingArrayTmp[i - BLHELI_SILABS_EEPROM_OFFSET];
                 }
