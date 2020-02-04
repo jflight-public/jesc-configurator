@@ -109,7 +109,7 @@ $(document).ready(function () {
     // translate to user-selected language
     localize();
 
-    $.get("https://jflight.net/jcfg_version.json", function (content) {
+    $.ajax({url: "https://jflight.net/jcfg_version.json", cache: false, success: function (content) {
         var result = content;
         GUI.log("Installed Configurator Version: " + chrome.runtime.getManifest().version + ", latest version: " + result.latestVersion);
         var v1 = result.requiredVersion.split(".");
@@ -132,7 +132,7 @@ $(document).ready(function () {
             GUI.log("<strong style=\"color:orangered\">Please Update JESC-Configurator!</strong><a style=\"color:white\" href=\"https://github.com/jflight-public/jesc-configurator/releases\" target=\"_blank\"> Click here to update</a> - Installed Configurator Version: " + chrome.runtime.getManifest().version + ", Required Version: " + result.requiredVersion);
             $('a.connect').addClass('disabled');
         }
-    }).fail(function () {
+    }}).fail(function () {
         GUI.log("couldn't retrieve version file due to internet availability");
     });
     
