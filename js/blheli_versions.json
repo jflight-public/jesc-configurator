@@ -36,22 +36,33 @@
         "key" : "je020248"
         },
         {
-        "name": "JESC 2.3 Beta 1 - 24khz PWM (recommended for 3in and up)",
-        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/578eea01578dae5c4a09b938b16f86cd033fc01d/HEX/JESC_{1}_24_2_3.HEX",
+        "name": "JESC 2.3 RC 1 (rpm on H only) - 24khz PWM (recommended for 3in and up)",
+        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/72dc1e6f315c40e617d643fea48b6a04243863f7/HEX/JESC_{1}_24_2_3.HEX",
         "key" : "je020324"
         }
         ,
         {
-        "name": "JESC 2.3 Beta 1 - 48khz PWM (recommended for whoops)",
-        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/578eea01578dae5c4a09b938b16f86cd033fc01d/HEX/JESC_{1}_48_2_3.HEX",
+        "name": "JESC 2.3 RC 1 (rpm on H only) - 48khz PWM (recommended for whoops)",
+        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/72dc1e6f315c40e617d643fea48b6a04243863f7/HEX/JESC_{1}_48_2_3.HEX",
         "key" : "je020348"
         }
         ,
         {
-        "name": "JESC 2.3 Beta 1 - 96khz PWM (experimental for whoops)",
-        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/578eea01578dae5c4a09b938b16f86cd033fc01d/HEX/JESC_{1}_96_2_3.HEX",
+        "name": "JESC 2.3 RC 1 - 96khz PWM (experimental for whoops)",
+        "url" : "https://raw.githubusercontent.com/jflight-public/jesc/72dc1e6f315c40e617d643fea48b6a04243863f7/HEX/JESC_{1}_96_2_3.HEX",
         "key" : "je020396",
         "supportsL" : false
+        },
+        {
+        "name": "JESC 2.3 L-ESC with rpm preview - 24khz PWM",
+        "url" : "https://jflight.net/downloads/JESC_L_ESC_RPM_PREVIEW/JESC_{1}_24_2_3.HEX",
+        "key" : "je020324"
+        }
+        ,
+        {
+        "name": "JESC 2.3 L-ESC with rpm preview - 48khz PWM",
+        "url" : "https://jflight.net/downloads/JESC_L_ESC_RPM_PREVIEW/JESC_{1}_48_2_3.HEX",
+        "key" : "je020348"
         }
     ]
 }

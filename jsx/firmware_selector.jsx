@@ -9,17 +9,17 @@ var FirmwareSelector = React.createClass({
     getInitialState: function() {
         const escHint = this.props.escHint;
 
-        var selectedEsc;
+        var selectedEsc = "#A_H_00#";
         if (this.props.supportedESCs.layouts[BLHELI_TYPES.BLHELI_S_SILABS].hasOwnProperty(escHint)) {
             selectedEsc = escHint;
         }
 
         var type;
-        if (findMCU(this.props.signatureHint, this.props.supportedESCs.signatures[BLHELI_TYPES.BLHELI_S_SILABS])) {
+//        if (findMCU(this.props.signatureHint, this.props.supportedESCs.signatures[BLHELI_TYPES.BLHELI_S_SILABS])) {
             type = BLHELI_TYPES.BLHELI_S_SILABS;
-        } else {
-            throw new Error('Unknown MCU signature: ' + this.props.signatureHint.toString(0x10));
-        }
+//        } else {
+//            throw new Error('Unknown MCU signature: ' + this.props.signatureHint.toString(0x10));
+//        }
 
         return {
             selectedEsc: selectedEsc,

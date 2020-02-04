@@ -1223,7 +1223,7 @@ var Configurator = React.createClass({
                     <div className="btn">
                         <a
                             href="#"
-                            className={!this.state.selectingFirmware && !this.state.isFlashing && this.state.canRead ? "" : "disabled"}
+                            className={!this.state.selectingFirmware && !this.state.isFlashing && !this.state.licensingAll && this.state.canRead ? "" : "disabled"}
                             onClick={this.readSetup}
                         >
                             {chrome.i18n.getMessage('escButtonRead')}
@@ -1232,7 +1232,7 @@ var Configurator = React.createClass({
                     <div className="btn">
                         <a
                             href="#"
-                            className={!this.state.selectingFirmware && !this.state.isFlashing && this.state.canWrite ? "" : "disabled"}
+                            className={!this.state.selectingFirmware && !this.state.isFlashing && !this.state.licensingAll && this.state.canWrite ? "" : "disabled"}
                             onClick={this.writeSetup}
                         >
                             {chrome.i18n.getMessage('escButtonWrite')}
@@ -1241,7 +1241,7 @@ var Configurator = React.createClass({
                     <div className={this.state.canResetDefaults ? "btn" : "hidden"}>
                         <a
                             href="#"
-                            className={!this.state.selectingFirmware && !this.state.IsFlashing && this.state.canWrite ? "" : "disabled"}
+                            className={!this.state.selectingFirmware && !this.state.isFlashing && !this.state.licensingAll &&this.state.canWrite ? "" : "disabled"}
                             onClick={this.resetDefaults}
                         >
                             {chrome.i18n.getMessage('resetDefaults')}
@@ -1250,7 +1250,7 @@ var Configurator = React.createClass({
                     <div className="btn">
                         <a
                             href="#"
-                            className={!this.state.selectingFirmware && !this.state.isFlashing && this.state.canFlashTlm ? "" : "disabled"}
+                            className={!this.state.selectingFirmware && !this.state.isFlashing && !this.state.licensingAll && this.state.canFlashTlm ? "" : "disabled"}
                             onClick={this.selectFirmwareForFlashAllTlm}
                         >
                             {chrome.i18n.getMessage('escButtonFlashAllTlm')}
@@ -1259,7 +1259,7 @@ var Configurator = React.createClass({
                     <div className="btn">
                         <a
                             href="#"
-                            className={!this.state.selectingFirmware && !this.state.isFlashing && this.state.canFlash ? "" : "disabled"}
+                            className={!this.state.selectingFirmware && !this.state.isFlashing && !this.state.licensingAll && this.state.canFlash ? "" : "disabled"}
                             onClick={this.selectFirmwareForFlashAll}
                         >
                             {chrome.i18n.getMessage('escButtonFlashAll')}
@@ -1291,7 +1291,7 @@ var Configurator = React.createClass({
         );
     },
     loadstop: function() {
-        if (this.webview.src.includes('return=1') && !this.webviewDone) {
+        if (this.webview.src.includes('return=1') && !this.webviewDone && this.state.licensingAll) {
             this.webview.removeEventListener('loadstop', this.lffunc);
             this.webviewDone = true;
             this.setState({
@@ -1340,7 +1340,7 @@ var Configurator = React.createClass({
             for (var i = 0; i < this.props.escCount; i++) {
                 url += '&uid' + (i+1) + '=' + this.state.escMetainfo[i].uid;
             }
-            return <div className="webView" ><webview ref={elem => { if( elem != null) { elem.addEventListener("loadstop", this.lffunc = this.loadstop.bind(this)); this.webviewDone = false; this.webview = elem;}}} autosize="on" src={url} ></webview></div>
+            return <div className="webView" ><webview ref={elem => { if( elem != null && this.state.licensingAll) { elem.addEventListener("loadstop", this.lffunc = this.loadstop.bind(this)); this.webviewDone = false; this.webview = elem;}}} autosize="on" src={url} ></webview></div>
         }
         
 
@@ -1378,8 +1378,8 @@ var Configurator = React.createClass({
                     escMetainfo={this.state.escMetainfo}
                     supportedESCs={this.state.supportedESCs}
                     onUserInput={this.onUserInput}
-                    canFlash={!this.state.isFlashing}
-                    canFlashTlm={!this.state.isFlashing && this.state.escMetainfo[idx].isLicensed && this.state.escMetainfo[idx].isActivated && this.state.escMetainfo[idx].isJesc}
+                    canFlash={!this.state.isFlashing && !this.state.licensingAll}
+                    canFlashTlm={!this.state.isFlashing && !this.state.licensingAll && this.state.escMetainfo[idx].isLicensed && this.state.escMetainfo[idx].isActivated && this.state.escMetainfo[idx].isJesc}
                     isFlashing={this.state.flashingEscIndex === idx && this.state.selectJESC}
                     isFlashingTlm={this.state.flashingEscIndex === idx && !this.state.selectJESC}
                     progress={this.state.flashingEscProgress}
