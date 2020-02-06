@@ -239,8 +239,8 @@ var Configurator = React.createClass({
                         uid.forEach((elem) => { var h = '0' + elem.toString(16); uidHex += h.slice(h.length - 2, h.length)});
                         GUI.log('uid: ' + uidHex);
                         escMetainfo[esc].uid = uidHex;
-                        if (uidQuery == '') uidQuery = 'https://jflight.net/checkuids.php?';
-                        uidQuery += 'uid' + uidCount++ + '=' + uidHex + '&';
+                        if (uidQuery == '') uidQuery = 'https://jflight.net/checkuids2.php?';
+                        uidQuery += 'uid' + esc + '=' + uidHex + '&';
                     }
 
                 } else {
