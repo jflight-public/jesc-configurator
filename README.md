@@ -18,7 +18,7 @@ This software is provided as is, use it at your own risk. **ALWAYS REMOVE THE PR
 
 ### Standalone
 
-Download the appropriate installer for your platform from [Releases](https://github.com/blheli-configurator/blheli-configurator/releases).
+Download the appropriate installer for your platform from [Releases](https://github.com/jflight-public/jesc-configurator/releases).
 
 ## Building (Chrome App)
 
