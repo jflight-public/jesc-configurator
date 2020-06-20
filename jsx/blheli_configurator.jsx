@@ -7,6 +7,8 @@ if (window.regeneratorRuntime == undefined) {
     window.regeneratorRuntime = global.regeneratorRuntime;
 }
 
+window.uiLocked = false;
+
 var Configurator = React.createClass({
     getInitialState: () => {
         return {
@@ -197,17 +199,12 @@ var Configurator = React.createClass({
                 // @todo C2 will require redesign here
                 escMetainfo[esc].signature = (message.params[1] << 8) | message.params[0];
 
+
                 // read everything in one big chunk
                 // SiLabs has no separate EEPROM, but Atmel has and therefore requires a different read command
                 var isSiLabs = [ _4way_modes.SiLC2, _4way_modes.SiLBLB ].includes(interfaceMode),
                     settingsArray = null;
-
-                const MCU = findMCU(escMetainfo[esc].signature, this.state.supportedESCs.signatures[BLHELI_TYPES.BLHELI_S_SILABS]);
-                if (MCU && MCU.name == 'EFM8BB10x') {
-                    escMetainfo[esc].isL = true;
-                } else {
-                    escMetainfo[esc].isL = false;
-                }
+                
                 escMetainfo[esc].isLocked = false;
                 escMetainfo[esc].isActivated = false;
                 escMetainfo[esc].tlmVersion = undefined;
@@ -220,6 +217,7 @@ var Configurator = React.createClass({
                     if (escMetainfo[esc].isJesc) {
                         escMetainfo[esc].pwm = buf2ascii(data3.subarray(8,10));
                     }
+                    escMetainfo[esc].isL = settingsArray[0x43] == "L".charCodeAt(0);
                     if (!escMetainfo[esc].isL) {
                         const data = (await _4way.read(0xfbfc, 4)).params;
                         if (data[0] != 0 && data[1] == 0xa5 && data[2] == 0xa5)
@@ -1224,7 +1222,7 @@ var Configurator = React.createClass({
                         <a
                             href="#"
                             className={!this.state.selectingFirmware && !this.state.isFlashing && !this.state.licensingAll && this.state.canRead ? "" : "disabled"}
-                            onClick={this.readSetup}
+                            onClick={this.readSetupHandler}
                         >
                             {chrome.i18n.getMessage('escButtonRead')}
                         </a>
@@ -1233,7 +1231,7 @@ var Configurator = React.createClass({
                         <a
                             href="#"
                             className={!this.state.selectingFirmware && !this.state.isFlashing && !this.state.licensingAll && this.state.canWrite ? "" : "disabled"}
-                            onClick={this.writeSetup}
+                            onClick={this.writeSetupHandler}
                         >
                             {chrome.i18n.getMessage('escButtonWrite')}
                         </a>
@@ -1242,7 +1240,7 @@ var Configurator = React.createClass({
                         <a
                             href="#"
                             className={!this.state.selectingFirmware && !this.state.isFlashing && !this.state.licensingAll &&this.state.canWrite ? "" : "disabled"}
-                            onClick={this.resetDefaults}
+                            onClick={this.resetDefaultsHandler}
                         >
                             {chrome.i18n.getMessage('resetDefaults')}
                         </a>
@@ -1278,6 +1276,24 @@ var Configurator = React.createClass({
             </div>
         );
     },
+    readSetupHandler: function() {
+        if (window.uiLocked) return;
+        window.uiLocked = true;
+        this.readSetup();
+        window.uiLocked = false;
+    },
+    writeSetupHandler: function() {
+        if (window.uiLocked) return;
+        window.uiLocked = true;
+        this.writeSetup();
+        window.uiLocked = false;
+    },
+    resetDefaultsHandler: function() {
+        if (window.uiLocked) return;
+        window.uiLocked = true;
+        this.resetDefaults();
+        window.uiLocked = false;
+    },
     renderContent: function() {
         const noneAvailable = !this.state.escMetainfo.some(info => info.available);
         if (noneAvailable) {
@@ -1297,7 +1313,7 @@ var Configurator = React.createClass({
             this.setState({
                 licensingAll: false
             });
-            this.readSetup();
+            this.readSetupHandler();
         }
     },
     renderWrappers: function() {

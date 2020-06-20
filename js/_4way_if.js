@@ -188,7 +188,7 @@ var _4way = {
             deferred = Q.defer(),
             retry = 0;
 
-        const maxRetries = 2;
+        const maxRetries = 7;
         
         function recvCallback(msg) {
             if (msg.ack === _4way_ack.ACK_OK) {

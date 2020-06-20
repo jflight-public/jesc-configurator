@@ -173,6 +173,9 @@ var FirmwareSelector = React.createClass({
         });
     },
     onlineFirmwareSelected: async function() {
+        if (window.uiLocked) return;
+        window.uiLocked = true;
+
         const versions = this.props.selectJESC ? this.props.firmwareVersions['JESC'] : this.props.firmwareVersions['Telemetry'];
         const version = versions[this.state.selectedVersion];
         const escs = this.props.supportedESCs.layouts[this.state.type];
@@ -201,6 +204,7 @@ var FirmwareSelector = React.createClass({
                 
                 if (Debug.enabled) {
                     console.log('loaded hex', hex.length, eep ? 'eep ' + eep.length: '');
+                    window.uiLocked = false;
                     return;
                 }
                 
@@ -219,8 +223,11 @@ var FirmwareSelector = React.createClass({
             const hex = new String(version.url);
             this.props.onFirmwareLoaded(hex,undefined);
         }
+        window.uiLocked = false;
     },
     localFirmwareSelected: async function() {
+        if (window.uiLocked) return;
+        window.uiLocked = true;
         try {
             const hex = await selectFile('hex');
             var eep;
@@ -234,5 +241,6 @@ var FirmwareSelector = React.createClass({
         } catch (error) {
             GUI.log('Could not load local firmware: ' + error.message);
         }
+        window.uiLocked = false;
     },
 });
