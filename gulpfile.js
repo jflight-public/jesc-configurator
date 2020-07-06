@@ -241,6 +241,7 @@ gulp.task('apps', ['dist', 'clean-apps'], function (done) {
         files: './dist/**/*',
         buildDir: appsDir,
         platforms: platforms,
+        version: '0.42.3',
         flavor: 'normal',
         macIcns: './images/jesc.icns',
         macPlist: { 'CFBundleDisplayName': 'JESC Configurator'}
@@ -267,6 +268,7 @@ gulp.task('debug', ['dist', 'clean-debug'], function (done) {
         files: './dist/**/*',
         buildDir: debugDir,
         platforms: platforms,
+        version: '0.42.3',
         flavor: 'sdk',
         macIcns: './images/jesc.icns',
         macPlist: { 'CFBundleDisplayName': 'JESC Configurator'}
