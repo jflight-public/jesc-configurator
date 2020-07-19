@@ -188,14 +188,24 @@ var _4way = {
             deferred = Q.defer(),
             retry = 0;
 
-        const maxRetries = 7;
-        
+        const maxRetriesRead = 30;
+        const maxRetries = 5;
+
+        function resend() {
+            var delay = Math.random() * 0.06;
+            var pnow = performance.now();
+            while (performance.now() - pnow < delay);
+            console.debug(performance.now().toString() + ' resending', _4way_command_to_string(command), address.toString(0x10), params);
+            serial.send(message, sendCallback);
+        }
+
         function recvCallback(msg) {
             if (msg.ack === _4way_ack.ACK_OK) {
                 deferred.resolve(msg)
             } else {
-                if (++retry < maxRetries) {
-                    serial.send(message, sendCallback);
+                if (++retry < (msg.command == _4way_commands.cmd_DeviceRead ? maxRetriesRead :  maxRetries)) {
+                    var delay = Math.random() * 5 + 4;
+                    setTimeout(resend, delay);
                 } else {
                     deferred.reject(new Error(_4way_command_to_string(msg.command) + ' ' + _4way_ack_to_string(msg.ack)));
                 }
