@@ -114,7 +114,7 @@ $(document).ready(function () {
         GUI.log("Installed Configurator Version: " + chrome.runtime.getManifest().version + ", latest version: " + result.latestVersion);
         var v1 = result.requiredVersion.split(".");
         var v2 = chrome.runtime.getManifest().version.split(".");
-        googleAnalytics.sendEvent('Configurator', 'Version', result.version);
+        googleAnalytics.sendEvent('Configurator', 'Version', chrome.runtime.getManifest().version);
         var invalidVersion = false;
         for (var i = 0; i < 3; i++) {
             var a = parseInt(v1[i]);
