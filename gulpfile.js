@@ -199,6 +199,7 @@ gulp.task('dist', ['clean-dist', 'build-js'], function () {
         './package.json', // For NW.js
         './manifest.json', // For Chrome app
         './eventPage.js',
+        './main_nwjs.js',
         './*.html',
         './tabs/*.html',
         './images/**/*',
@@ -241,7 +242,7 @@ gulp.task('apps', ['dist', 'clean-apps'], function (done) {
         files: './dist/**/*',
         buildDir: appsDir,
         platforms: platforms,
-        version: '0.42.3',
+        version: '0.50.2',
         flavor: 'normal',
         macIcns: './images/jesc.icns',
         macPlist: { 'CFBundleDisplayName': 'JESC Configurator'}
@@ -268,7 +269,7 @@ gulp.task('debug', ['dist', 'clean-debug'], function (done) {
         files: './dist/**/*',
         buildDir: debugDir,
         platforms: platforms,
-        version: '0.42.3',
+        version: '0.50.2',
         flavor: 'sdk',
         macIcns: './images/jesc.icns',
         macPlist: { 'CFBundleDisplayName': 'JESC Configurator'}

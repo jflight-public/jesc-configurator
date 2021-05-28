@@ -1,4 +1,3 @@
-<script>
     // Closing empty default nw.js window; we use the chrome window created in eventPage.js.
     // The window created in eventPage.js also has some hocks to cleanup stuff when closing.
     // Restoring window size, position and state also works out-of-the-box.
@@ -11,8 +10,8 @@ function startApplication() {
           createdWindow.on('close',function() {
             // automatically close the port when application closes
             // save connectionId in separate variable before createdWindow.contentWindow is destroyed
-            var connectionId = createdWindow.contentWindow.serial.connectionId,
-                valid_connection = createdWindow.contentWindow.CONFIGURATOR.connectionValid;
+            var connectionId = createdWindow.window.serial.connectionId,
+                valid_connection = createdWindow.window.CONFIGURATOR.connectionValid;
 
             if (connectionId && valid_connection) {
                 // Desperately attempt to exit 4way-if mode with a hand-tailored command
@@ -36,4 +35,3 @@ function startApplication() {
     startApplication();
 
     
-</script>

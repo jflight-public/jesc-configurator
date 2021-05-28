@@ -21,6 +21,11 @@ function startApplication() {
             createdWindow.contentWindow.catch_startup_time(applicationStartTime);
         });
 
+        var mb = new nw.Menu({type:"menubar"});
+        mb.createMacBuiltin("your-app-name");
+        // appenad, insert or delete items of `mb` to customize your own menu
+        // then ...
+        nw.Window.get().menu = mb;
         createdWindow.onClosed.addListener(function() {
             // automatically close the port when application closes
             // save connectionId in separate variable before createdWindow.contentWindow is destroyed
